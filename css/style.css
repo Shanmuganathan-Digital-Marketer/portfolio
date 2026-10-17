@@ -34,6 +34,9 @@
 }
 
 *,*::before,*::after{box-sizing:border-box}
+/* Scroll-in animations (AOS fade-left/right) start ~100px off to the side; clip it so the page never scrolls sideways */
+html,body{overflow-x:hidden;max-width:100%}
+main{overflow-x:clip}
 html{scroll-behavior:smooth;scroll-padding-top:calc(var(--header-h) + 8px)}
 body{margin:0;font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
 img{max-width:100%;height:auto;display:block}
