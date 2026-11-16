@@ -9,15 +9,10 @@
   var burger = document.getElementById('burger');
   var menu = document.getElementById('menu');
 
-  /* ---------- Theme (saved in localStorage when available) ---------- */
-  function getSaved() { try { return localStorage.getItem('theme'); } catch (e) { return null; } }
-  function save(v) { try { localStorage.setItem('theme', v); } catch (e) {} }
-  var saved = getSaved();
-  if (saved) {
-    root.setAttribute('data-theme', saved);
-  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    root.setAttribute('data-theme', 'dark');
-  }
+  /* ---------- Theme (dark storm by default; the visitor's choice is remembered) ---------- */
+  function getSaved() { try { return localStorage.getItem('theme-thor'); } catch (e) { return null; } }
+  function save(v) { try { localStorage.setItem('theme-thor', v); } catch (e) {} }
+  root.setAttribute('data-theme', getSaved() || 'dark');
   document.getElementById('themeToggle').addEventListener('click', function () {
     var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     root.setAttribute('data-theme', next);
@@ -62,29 +57,31 @@
   /* ---------- AOS scroll animations ---------- */
   if (window.AOS) { AOS.init({ duration: 700, once: true, offset: 70, easing: 'ease-out-cubic' }); }
 
-  /* ---------- Count-up numbers ---------- */
+  /* ---------- Count-up numbers ----------
+     The real values (2+, 15+, 6+, 3+) are written in the HTML, so they always show.
+     The count-up is only an extra: it restarts from 0 when a number scrolls into view. */
   var counters = document.querySelectorAll('.count');
+  function finalText(el) { return el.getAttribute('data-to') + (el.getAttribute('data-suffix') || ''); }
   function runCounter(el) {
     var to = parseInt(el.getAttribute('data-to'), 10) || 0;
     var suffix = el.getAttribute('data-suffix') || '';
-    var start = null, dur = 1200;
+    var from = Math.ceil(to / 2), start = null, dur = 1200;   /* starts at half so a 0 is never shown */
     function step(ts) {
       if (start === null) start = ts;
       var p = Math.min((ts - start) / dur, 1);
-      el.textContent = Math.round(to * p) + (p === 1 ? suffix : '');
-      if (p < 1) requestAnimationFrame(step);
+      el.textContent = Math.round(from + (to - from) * p) + suffix;
+      if (p < 1) requestAnimationFrame(step); else el.textContent = finalText(el);
     }
     requestAnimationFrame(step);
   }
-  if ('IntersectionObserver' in window) {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if ('IntersectionObserver' in window && !reduce) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (e.isIntersecting) { runCounter(e.target); io.unobserve(e.target); }
       });
-    }, { threshold: 0.6 });
+    }, { threshold: 0.3 });
     counters.forEach(function (c) { io.observe(c); });
-  } else {
-    counters.forEach(function (c) { c.textContent = c.getAttribute('data-to') + (c.getAttribute('data-suffix') || ''); });
   }
 
   /* ---------- Contact form (opens the visitor's email app) ----------
