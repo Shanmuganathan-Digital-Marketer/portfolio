@@ -89,7 +89,7 @@ code{background:var(--bg-alt);padding:.1em .4em;border-radius:6px;font-size:.9em
 .burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
 /* ---------- Hero ---------- */
-.hero{position:relative;min-height:100svh;display:flex;align-items:center;padding:calc(var(--header-h) + 40px) 0 70px;overflow:hidden;background:#050912 url('../img/hero-bg.svg') center/cover no-repeat;color:#eef0ff}
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;padding:calc(var(--header-h) + 40px) 0 70px;overflow:hidden;background:#050912 url('../img/hero-bg.jpg') center/cover no-repeat;color:#eef0ff}
 .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:50px;align-items:center}
 .eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.85rem;font-weight:500;padding:.45em 1em;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);margin-bottom:22px}
 .dot{width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 0 0 rgba(52,211,153,.6);animation:pulse 2s infinite}
@@ -461,3 +461,36 @@ h1,h2,h3,.title,.stat b,.logo-text{letter-spacing:.02em}
   box-shadow:0 0 .35cqw .05cqw rgba(255,255,255,.9),0 0 1cqw .35cqw rgba(125,211,252,.85),0 0 2.2cqw .7cqw rgba(56,189,248,.4)}
 .eye-l{left:44%;top:25.8%;width:5.1cqw;height:1.75cqw;transform:translate(-50%,-50%) rotate(-2deg)}
 .eye-r{left:53.5%;top:25.8%;width:5.9cqw;height:1.75cqw;transform:translate(-50%,-50%) rotate(2deg)}
+
+/* =========================================================
+   v11: PERFORMANCE
+   - clouds move with transform (GPU), not background-position (repaint every frame)
+   - pre-rendered background image instead of a heavy SVG filter
+   - no filters/shadows on the hero text, fewer layers on phones
+   ========================================================= */
+.hero::before,.hero::after{width:calc(100% + 1800px);height:100%;background-repeat:repeat-x;background-position:0 0;background-image:url('../img/clouds.webp');will-change:transform;backface-visibility:hidden}
+.hero::before{background-size:1200px 100%;opacity:.8;animation:cloudsMoveA 32s linear infinite}
+.hero::after{background-size:1800px 130%;opacity:.5;animation:cloudsMoveB 55s linear infinite}
+@keyframes cloudsMoveA{from{transform:translate3d(0,0,0)}to{transform:translate3d(-1200px,0,0)}}
+@keyframes cloudsMoveB{from{transform:translate3d(-1800px,0,0)}to{transform:translate3d(0,0,0)}}
+.hero .grad,.hero.strike .grad{filter:none}
+.hero .photo-wrap::after{transition:none}
+#storm{will-change:auto}
+@media (max-width:820px){
+  .hero::after{display:none}
+  .hero::before{animation-duration:40s}
+}
+@media (prefers-reduced-motion:reduce){.hero::before,.hero::after{animation:none}}
+
+/* v12: gentle opening transition (opacity + tiny slide only = smooth, no lag) */
+@keyframes openFade{from{opacity:0;transform:translate3d(0,14px,0)}to{opacity:1;transform:none}}
+@keyframes openFadeSoft{from{opacity:0}to{opacity:1}}
+.header{animation:openFadeSoft .6s ease-out both}
+.hero-copy{animation:openFade .7s cubic-bezier(.22,.61,.36,1) .05s both}
+.hero-visual{animation:openFadeSoft .9s ease-out .2s both}
+#storm{animation:openFadeSoft 1.2s ease-out .3s both}
+@media (prefers-reduced-motion:reduce){.header,.hero-copy,.hero-visual,#storm{animation:none}}
+
+/* v13: hero title and typing line use the Cinzel font again, slightly bigger */
+.hero h1{font-size:clamp(2rem,4.5vw,3.45rem)}
+.hero .typed-line{font-size:clamp(1.3rem,3vw,2rem);letter-spacing:.02em}

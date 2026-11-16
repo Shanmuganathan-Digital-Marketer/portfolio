@@ -26,16 +26,16 @@ Keep the same file names, or update the `src` in `index.html`.
 
 | File | Size | Use |
 |---|---|---|
-| `img/profile.png` | 600 x 600 | Hero photo, transparent background so the site background shows through (cut out your own with remove.bg or Canva) |
+| `img/profile.webp` | 600 x 600 | Hero photo, transparent background so the site background shows through (cut out your own with remove.bg or Canva) |
 | `img/about.jpg` | 700 x 560 | About section |
-| `img/hero-bg.svg` | 1600 x 900 | Hero background |
+| `img/hero-bg.jpg` | 1600 x 900 | Hero background |
 | `img/og-image.jpg` | 600 x 600 | Link preview image (`og:image`), your photo with its original navy backdrop |
 | `img/logo-on-light.png`, `img/logo-on-dark.png` | transparent PNG | SN logo in the header (navy/teal on light backgrounds, bright teal on dark ones; swapped automatically) |
 | `img/logo-original.png` | transparent PNG | Your original blue SN logo, kept for reference |
 | `img/favicon.png`, `img/apple-touch-icon.png` | 64 / 180 px | Browser tab and phone home-screen icon (SN logo on a white tile) |
 
 If your new image is a `.jpg` or `.png`, change the extension in `index.html` too (search for `img/`).
-For the hero background, edit the `url('../img/hero-bg.svg')` line in `css/style.css`.
+For the hero background, edit the `url('../img/hero-bg.jpg')` line in `css/style.css`.
 
 ## Edit your content
 
@@ -57,13 +57,17 @@ After publishing, set `og:image` to a full URL (https://yourdomain/img/og-image.
 
 - Opens in the dark storm theme; the sun/moon button switches to a lighter page (your choice is remembered).
 - **Lightning:** `js/lightning.js`. Change `MIN_GAP` / `MAX_GAP` for how often bolts strike, or click the hero to call one down. It pauses off screen and is switched off for visitors who prefer reduced motion.
-- **Colours:** electric blue `--accent` and gold `--accent-2` at the top of `css/style.css`. Headings use the Cinzel font (Google Fonts, needs internet).
-- **Storm background:** `img/hero-bg.svg`; the drifting clouds are `img/clouds.png` (speed: the `cloudsA`/`cloudsB` animations in `css/style.css`). The theme uses original artwork only, no Marvel logos or images.
+- **Colours:** electric blue `--accent` and gold `--accent-2` at the top of `css/style.css`. Headings use the Cinzel font (Google Fonts, needs internet) (Google Fonts, needs internet).
+- **Storm background:** `img/hero-bg.jpg`; the drifting clouds are `img/clouds.webp` (speed: the `cloudsA`/`cloudsB` animations in `css/style.css`). The theme uses original artwork only, no Marvel logos or images.
 
 ## Lightning eye glow (hero photo)
 
-Every 4.5 seconds a bolt strikes and your eyes glow white-blue for about 1 second on the professional photo. Timing: `js/lightning.js` (`MIN_GAP`, `MAX_GAP`, `THOR_MS`). Glow position and size: `.eye-l` / `.eye-r` / `.eye` at the end of `css/style.css` (move them if you swap `img/profile.png`).
+Every 4.5 seconds a bolt strikes and your eyes glow white-blue for about 1 second on the professional photo. Timing: `js/lightning.js` (`MIN_GAP`, `MAX_GAP`, `THOR_MS`). Glow position and size: `.eye-l` / `.eye-r` / `.eye` at the end of `css/style.css` (move them if you swap `img/profile.webp`).
 
 ## Moving clouds
 
-`img/clouds.png` drifts across the hero in two layers. Speed: `animation-duration` on `.hero::before` and `.hero::after` at the end of `css/style.css` (smaller number = faster).
+`img/clouds.webp` drifts across the hero in two layers. Speed: `animation-duration` on `.hero::before` and `.hero::after` at the end of `css/style.css` (smaller number = faster).
+
+## Performance notes
+
+The hero is optimised for phones and laptops: clouds move with GPU transforms, the background is a pre-rendered image (`img/hero-bg.jpg`), photos are WebP (`img/profile.webp`, `img/clouds.webp`), the lightning canvas only runs during a strike, and scroll animations are off on small phones. If you replace `profile.webp`, export a transparent WebP or PNG (and update the `src` in `index.html`).

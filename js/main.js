@@ -55,7 +55,7 @@
   }
 
   /* ---------- AOS scroll animations ---------- */
-  if (window.AOS) { AOS.init({ duration: 700, once: true, offset: 70, easing: 'ease-out-cubic' }); }
+  if (window.AOS) { AOS.init({ duration: 500, once: true, offset: 40, easing: 'ease-out', disable: function () { return window.innerWidth < 600; } }); }
 
   /* ---------- Count-up numbers ----------
      The real values (2+, 15+, 6+, 3+) are written in the HTML, so they always show.
